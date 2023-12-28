@@ -1,0 +1,77 @@
+{% load i18n static %}<!DOCTYPE html>
+<html lang="ru-ru" dir="ltr">
+<head>
+<title>Публикации</title>
+<link rel="stylesheet" type="text/css" href="{% static "css/base.css" %}">
+<script type="text/javascript" src="{% static "js/main.js" %}"></script>
+
+{% block extrastyle %}{% endblock %}
+
+</head>
+
+<body class="{% block bodyclass %}{% endblock %}"  data-admin-utc-offset="{% now "Z" %}">
+
+<!-- Container -->
+<div id="container">
+
+    <!-- Header -->
+    {% block header %}
+    <div id="header">
+        <div id="branding">
+        {% block branding %}Приложение публикаций{% endblock %}
+        </div>
+        {% block usertools %}
+        <div id="user-tools">
+	        {% if request.user.is_authenticated %}
+                Добро пожаловать
+                <strong>{% firstof user.get_short_name user.get_username %}</strong>.
+                {% if user.has_usable_password %}
+                <a href="{% url 'auth:password_change' %}">Изменить пароль</a> /
+                {% endif %}
+                <form id="logout-form" method="post" action="{% url 'auth:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit">Выйти</button>
+                </form>
+                
+            {% else %}
+                <a href="{% url 'registration' %}">зарегистрироваться</a> /
+                <a href="{% url 'auth:password_reset' %}">восстановить пароль</a> /
+                <a href="{% url 'auth:login' %}">Войти</a>
+            {% endif %}
+        </div>
+        {% endblock %}
+    </div>
+    {% endblock %}
+    <!-- END Header -->
+
+    {% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'publications-list' %}">Последние</a> |
+        <a href="{% url 'publications-top' %}">Самые Рейтинговые</a> |
+        <a href="{% url 'publication-add' %}">Добавить публикацию</a>
+        
+        
+    </div>
+    {% endblock %}
+
+
+    <div class="main" id="main">
+      <div class="content">
+
+        <!-- Content -->
+        <div id="content" class="{% block coltype %}colM{% endblock %}">
+          {% block content %}
+            {{ content }}
+          {% endblock %}
+          <br class="clear">
+        </div>
+        <!-- END Content -->
+
+      </div>
+    </div>
+</div>
+<!-- END Container -->
+
+
+</body>
+</html>

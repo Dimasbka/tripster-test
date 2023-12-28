@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Добавить публикацию</h1>
+	<form method="post" action=""  enctype="multipart/form-data">{% csrf_token %}
+		{{ form.as_div }}
+		<input type="submit" value="Добавить Публикацию" onclick="$(this).hide();" style="width: 100%"/>
+	</form>
+</div>
+
+{% endblock content %}

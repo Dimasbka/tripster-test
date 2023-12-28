@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+	<h1>{{title}}</h1>
+<div class="results">
+	<table id="result_list">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>Автор</th>
+				<th>Дата</th>
+				<th width="70%">Публикация</th>
+				<th>Рейтинг</th>
+				<th>Голосов</th>
+				<th>Нравится?</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for publication in object_list %}
+				<tr id='p_{{publication.id}}'>
+					<th>{{ publication.id }}</th>
+					<td>{{ publication.user }}</td>
+					<td>{{ publication.publish_date|date }}</td>
+					<td>{{ publication.text }}</td>
+					<td class="field-rating">{{ publication.rating }}</td>
+					<td class="field-votes">{{ publication.votes }}</td>
+					<td class="field-actions">
+						{% if request.user.is_authenticated %}
+							{% with user_vote=publication.user_vote.0.vote %}
+								<a onclick='voteAdd({{ publication.id }},1)'  class="vote-plus   {% if user_vote == 1 %}checed{% endif %}">нравится</a>
+								<a onclick='voteAdd({{ publication.id }},-1)' class="vote-minus  {% if user_vote == -1 %}checed{% endif %}">нет</a>
+								<a onclick='voteDelete({{ publication.id }})' class="vote-delete {% if user_vote %}checed{% endif %}">удалить оценку</a>
+							{% endwith %}
+						{% else %}
+								<a href="{% url 'auth:login' %}" class="vote-plus">нравится</a>
+								<a href="{% url 'auth:login' %}" class="vote-minus">нет</a>
+								<a href="{% url 'auth:login' %}" class="vote-delete">удалить оценку</a>
+						{% endif %}
+					</td>
+				</tr>
+			{% empty %}
+				<td colspan="100%"><i>Публикаций пока нет</i></td>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+
+{% endblock content %}
+
+
+main.js
