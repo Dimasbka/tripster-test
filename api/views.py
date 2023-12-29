@@ -19,9 +19,6 @@ from .permissions import IsOwnerOrReadOnly
 
 
 class PublicationRecent(generics.ListCreateAPIView):
-    """ Представлению PublicationRecent требуется разрешение 
-        IsAuthenticatedOrReadOnly, потому что пользователь должен аутентифицироваться, 
-        чтобы создать пост, а вот просматривать список может любой пользователь."""
     queryset = Publication.objects.order_by('-publish_date')[:10]
     serializer_class = serializers.PublicationSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
