@@ -15,10 +15,11 @@ from django.urls import reverse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, requires_csrf_token,ensure_csrf_cookie
 import json
 
 
+@ensure_csrf_cookie
 def publications_listing( request, order='recent' ):
     res = { 'order' : order }
 
@@ -45,7 +46,7 @@ def publications_listing( request, order='recent' ):
            res = { 'title' : 'Последние Публикации' }
 
 
-    res['object_list'] = object_list[:10]
+    res['object_list'] = object_list 
     return render(request,  'publications/list.html', res  )
 
 
@@ -70,6 +71,32 @@ def publication_add( request ):
 
 
 
+
+@csrf_exempt
+def publication_info( request ):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        # полуление свежего рейтинга, для обновления на странице
+        res = Publication.get_votes_rating_dict( data['publication_id']) 
+
+        # полуление оценки если есть 
+        if PublicationVote.objects.filter(
+            publication_id=data['publication_id'], 
+            user_id=request.user.id).exists( ):
+            
+            vote_obj = PublicationVote.objects.get(
+                publication_id=data['publication_id'], 
+                user_id=request.user.id )
+
+            res['vote'] = vote_obj.vote
+            res['vote_id'] = vote_obj.id
+
+        return JsonResponse(res) 
+
+    return HttpResponseRedirect( reverse( 'index',) )
+
+
 @csrf_exempt
 @login_required
 def vote_add( request ):
@@ -77,7 +104,12 @@ def vote_add( request ):
         data = json.loads(request.body)
 
         # обновление оценки
-        res = PublicationVote.vote_add_or_update( data['publication_id'], data['vote'], request.user.id )
+        vote_obj = PublicationVote.vote_add_or_update( data['publication_id'], data['vote'], request.user.id )
+        res =  { 
+            'vote':vote_obj.vote,
+            'id':vote_obj.id,
+        }
+
 
         # полуление свежего рейтинга, для обновления на странице
         res.update( Publication.get_votes_rating_dict( data['publication_id']) )

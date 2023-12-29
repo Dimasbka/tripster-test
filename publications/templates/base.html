@@ -3,6 +3,13 @@
 <head>
 <title>Публикации</title>
 <link rel="stylesheet" type="text/css" href="{% static "css/base.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "rest_framework/css/prettify.css" %}">
+
+{% csrf_token %}
+<script>
+const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+</script>
+
 <script type="text/javascript" src="{% static "js/main.js" %}"></script>
 
 {% block extrastyle %}{% endblock %}

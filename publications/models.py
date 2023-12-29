@@ -13,14 +13,14 @@ from django.utils import timezone
 class PublicationVote(  models.Model  ):
     """Оценки хранятся в таком виде что-бы суммирование давало рейтинга статьи"""
  
-    class Vote(models.IntegerChoices): 
-        BAD   = -1, 'Плохой' 
-        EMPTY =  0, 'нет отзыва'
-        GOOD  =  1, 'Хороший'
+#    class Vote(models.IntegerChoices): 
+#        BAD   = -1, 'Плохой' 
+#        EMPTY =  0, 'нет отзыва'
+#        GOOD  =  1, 'Хороший'
 
     VOTE_CHOICES = (
             (-1, 'Плохой' ),
-            ( 0, 'нет отзыва'),
+#            ( 0, 'нет отзыва'),
             ( 1, 'Хороший'),
         )
 
@@ -48,13 +48,13 @@ class PublicationVote(  models.Model  ):
 
     @classmethod
     def vote_add_or_update( cls, publication_id:int, vote:int, user_id:int ):
-        """Добавиляет или обновляет существуюший рейтинг
-            если рейтинг уже стоял  
-                старая оценка +1 и новая оценка -1 рейтинг поменяется на 0
-                старая оценка -1 и новая оценка +1 рейтинг поменяется на 0
-                старая оценка  0 поменяется на новую оценку
+        """ ишит рейтинг c совпадающим publication_id  user_id
+                если оценка не помянялась ничего не сохнаняется
+                если поменялось обновляет 
+            в про тивном случае создает новую оценку 
         """
         with transaction.atomic():
+
             vote_obj, created = cls.objects.get_or_create(
                 publication_id=publication_id,
                 user_id=user_id,
@@ -63,20 +63,11 @@ class PublicationVote(  models.Model  ):
 
             if created:
                 vote_obj.save()
-                status='added'
 
-            elif vote != vote_obj.vote:
-                vote_obj.vote += vote
+            elif vote_obj.vote != vote:
+                vote_obj.vote = vote
                 vote_obj.save()
-                status='updated'
-
-            else:
-                status='pass'
-
-        return { 
-            'vote':vote_obj.vote,
-            'status': status
-        }
+            return vote_obj
 
     @classmethod
     def vote_delete( cls, publication_id:int, user_id:int, ):

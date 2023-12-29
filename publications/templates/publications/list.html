@@ -2,11 +2,32 @@
 
 
 {% block content %}
-	<h1>{{title}}</h1>
+<h1>{{title}}</h1>
+<p>
+	Тут выводятся все публикации без разбивки на страницы
+</p>
+<p>
+	<b>Обновление оценоки идет через метод API</b>
+	<pre class="prettyprint"><b><span class="pln">POST</span></b><span class="pln"> </span><span class="pun">/</span><span class="pln">api</span><span class="pun">/</span><span class="pln">votes</span><span class="pun">/</span></pre>
+</p>
+<p>
+	<b>Удаление через метод API</b>
+	<pre class="prettyprint"><b><span class="pln">DELETE</span></b><span class="pln"> </span><span class="pun">/</span><span class="pln">api</span><span class="pun">/</span><span class="pln">votes</span><span class="pun">/</span><span class="str">pk</span><span class="pun">/</span></pre>
+</p>
+
+<p>
+	После этого перерисовывается рйтинг для измененной публикации
+</p>
+
+
+
+
+
 <div class="results">
 	<table id="result_list">
 		<thead>
 			<tr>
+				<th></th>
 				<th>ID</th>
 				<th>Автор</th>
 				<th>Дата</th>
@@ -19,7 +40,9 @@
 		<tbody>
 			{% for publication in object_list %}
 				<tr id='p_{{publication.id}}'>
-					<th>{{ publication.id }}</th>
+					<td>#{{ forloop.counter }}</td>
+
+					<th><span class="str">{{ publication.id }}</span></th>
 					<td>{{ publication.user }}</td>
 					<td>{{ publication.publish_date|date }}</td>
 					<td>{{ publication.text }}</td>
@@ -27,10 +50,17 @@
 					<td class="field-votes">{{ publication.votes }}</td>
 					<td class="field-actions">
 						{% if request.user.is_authenticated %}
-							{% with user_vote=publication.user_vote.0.vote %}
-								<a onclick='voteAdd({{ publication.id }},1)'  class="vote-plus   {% if user_vote == 1 %}checed{% endif %}">нравится</a>
-								<a onclick='voteAdd({{ publication.id }},-1)' class="vote-minus  {% if user_vote == -1 %}checed{% endif %}">нет</a>
-								<a onclick='voteDelete({{ publication.id }})' class="vote-delete {% if user_vote %}checed{% endif %}">удалить оценку</a>
+							{% with user_vote=publication.user_vote.0  %}
+
+								<a onclick='voteAdd({{ publication.id }},1)'  class="vote-plus   {% if user_vote.vote == 1 %}checed{% endif %}">нравится</a>
+								<a onclick='voteAdd({{ publication.id }},-1)' class="vote-minus  {% if user_vote.vote == -1 %}checed{% endif %}">нет</a>
+								<div class="vote-delete-wrap">
+									{% if user_vote %}
+										<a onclick='voteDelete({{ publication.id }},{{ user_vote.id }})' class="vote-delete checed">удалить оценку</a>
+									{% endif %}
+								</div>
+								
+								
 							{% endwith %}
 						{% else %}
 								<a href="{% url 'auth:login' %}" class="vote-plus">нравится</a>

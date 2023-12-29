@@ -34,10 +34,10 @@ urlpatterns = [
     path('top/', views.publications_listing,{'order': 'top'}, name='publications-top' ),
 
     path('publication/add/', views.publication_add, name='publication-add'),
+    path('publication/info/', views.publication_info, name='publication-info'),
 
     path('publication/vote/',        views.vote_add, name='vote-add'),
     path('publication/vote/delete/', views.vote_delete, name='vote-delete'),
-
 
     path("accounts/registration/", views.user_registration, name='registration'),
     path('accounts/', include(('django.contrib.auth.urls','auth'), namespace='auth')),
