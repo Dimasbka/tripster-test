@@ -69,7 +69,48 @@ def publication_add( request ):
     return render(request,'publications/add.html',res )
 
 
+
+@csrf_exempt
+@login_required
+def vote_add( request ):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        # обновление оценки
+        res = PublicationVote.vote_add_or_update( data['publication_id'], data['vote'], request.user.id )
+
+        # полуление свежего рейтинга, для обновления на странице
+        res.update( Publication.get_votes_rating_dict( data['publication_id']) )
+        return JsonResponse(res) 
+
+    return HttpResponseRedirect( reverse( 'index',) )
+
+
+@csrf_exempt
+@login_required
+def vote_delete( request ):
+    """ Удаление уже проставленной оценки 
+        в данном методе не проводится проверкана существование оценки 
+    """
+
+    if request.method == 'DELETE':
+        data = json.loads(request.body)
+
+        # удаление оценки
+        PublicationVote.vote_delete( data['publication_id'], request.user.id )
+        res = { 'status': 'deleted' }
+
+        # полуление свежего рейтинга, для обновления на странице
+        res.update( Publication.get_votes_rating_dict( data['publication_id']) )
+        return JsonResponse(res) 
+
+    return render(request,  'publications/list.html', res  )
+
+
+
 def user_registration( request ):
+    """Для удобства тестирования добавил упрошенную регистрацию"""
+
     # Если уже авторизирован переходим на главную
     if request.user.is_authenticated :
         return HttpResponseRedirect( reverse( 'index',) ) 
@@ -91,37 +132,3 @@ def user_registration( request ):
 
     res = { 'form' : form }
     return render(request,'registration/user_registration.html',res )
-
-
-@csrf_exempt
-@login_required
-def vote_add( request ):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-
-        # обновление оценки
-        res = PublicationVote.vote_add_or_update( data['publication_id'], data['vote'], request.user.id )
-
-        # полуление свежего рейтинга, для обновления на странице
-        res.update( Publication.get_votes_rating_dict( data['publication_id']) )
-        return JsonResponse(res) 
-
-    return HttpResponseRedirect( reverse( 'index',) )
-
-
-@csrf_exempt
-@login_required
-def vote_delete( request ):
-    if request.method == 'DELETE':
-        data = json.loads(request.body)
-
-        # удаление оценки
-        PublicationVote.vote_delete( data['publication_id'], request.user.id )
-        res = { 'status': 'deleted' }
-
-        # полуление свежего рейтинга, для обновления на странице
-        res.update( Publication.get_votes_rating_dict( data['publication_id']) )
-        return JsonResponse(res) 
-
-    return render(request,  'publications/list.html', res  )
-

@@ -23,6 +23,10 @@ from django.urls import include, path
 from publications import views
 
 urlpatterns = [
+    path('api/', include('api.urls')),
+
+    path('api-auth/', include('rest_framework.urls')),
+
     path('admin/', admin.site.urls),
 
     path('', views.publications_listing, name='index'),

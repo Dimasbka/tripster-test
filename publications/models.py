@@ -11,7 +11,8 @@ from django.utils import timezone
 
 # Create your models here.
 class PublicationVote(  models.Model  ):
-    """Оценки хранятся в таком виде что бы сложение давало рейтинга статьи"""
+    """Оценки хранятся в таком виде что-бы суммирование давало рейтинга статьи"""
+ 
     class Vote(models.IntegerChoices): 
         BAD   = -1, 'Плохой' 
         EMPTY =  0, 'нет отзыва'
@@ -79,6 +80,9 @@ class PublicationVote(  models.Model  ):
 
     @classmethod
     def vote_delete( cls, publication_id:int, user_id:int, ):
+        """ Удаление уже проставленной оценки, в данном методе не проводится 
+            проверкана существование оценки так как это не влияет на результат 
+        """
         with transaction.atomic():
             cls.objects.filter(
                 publication_id=publication_id,
@@ -117,10 +121,9 @@ class Publication( models.Model ):
 
     @classmethod
     def  update_vote_handler(this, sender, instance: PublicationVote, **kwargs):
-        """Обновление рейтинга """
+        """обработчик Обновление рейтинга """
 
-        print( 'update_vote_handler',sender, instance)
-        
+#        print( 'update_vote_handler',sender, instance)
         if instance:
             publication = instance.publication
             with transaction.atomic():
@@ -135,10 +138,11 @@ class Publication( models.Model ):
 
     @classmethod
     def get_votes_rating_dict( cls, publication_id:int ):
-        """Получение текущего рейтинга """
+        """Получение текущего рейтинга
+           сделано для теста но используется и при изменении оценок"""
 
         publication = cls.objects.get(id=publication_id)
-        
+
         return {
             'votes':publication.votes,
             'rating':publication.rating,

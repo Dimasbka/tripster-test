@@ -39,6 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'publications',
+
+    'rest_framework',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -49,6 +52,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+#    'rest_framework.middleware.AuthenticationMiddleware',
+#    'rest_framework.middleware.AuthorizationMiddleware',
 ]
 
 ROOT_URLCONF = 'tripster_app.urls'
@@ -59,7 +65,7 @@ TEMPLATES = [
         'DIRS': [
                 # для логина и восстановления пароля использую методы админки 
                 # поэтому добавил пути шаблонов в начало списка 
-                BASE_DIR / 'publications/templates', 
+#                BASE_DIR / 'publications/templates', 
             ],
         'APP_DIRS': True,
         'OPTIONS': {
