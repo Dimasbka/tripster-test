@@ -11,4 +11,6 @@ db.sqlite3
 .settings
 .project
 .pydevproject
+.coverage
 examples/
+/.pytest_cache

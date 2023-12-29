@@ -52,12 +52,9 @@ class PublicationDetail(generics.RetrieveAPIView):
 
 
 class PublicationVoteList(generics.ListCreateAPIView):
-    """ Представлению PublicationRecent требуется разрешение 
-        IsAuthenticatedOrReadOnly, потому что пользователь должен аутентифицироваться, 
-        чтобы менять оценки пост,"""
     queryset = PublicationVote.objects.all()
     serializer_class = serializers.PublicationVoteSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -65,6 +62,7 @@ class PublicationVoteList(generics.ListCreateAPIView):
 class PublicationVoteDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = PublicationVote.objects.all()
     serializer_class = serializers.PublicationVoteSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
