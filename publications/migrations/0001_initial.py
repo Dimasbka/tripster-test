@@ -16,33 +16,95 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Publication',
+            name="Publication",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('text', models.TextField(verbose_name='Текст публикации')),
-                ('publish_date', models.DateTimeField(blank=True, default=django.utils.timezone.now, verbose_name='Дата публикации')),
-                ('rating', models.DecimalField(decimal_places=4, default=0, max_digits=6, verbose_name='Рейтинг')),
-                ('votes', models.IntegerField(default=0, verbose_name='Количество голосов')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='Автор')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("text", models.TextField(verbose_name="Текст публикации")),
+                (
+                    "publish_date",
+                    models.DateTimeField(
+                        blank=True,
+                        default=django.utils.timezone.now,
+                        verbose_name="Дата публикации",
+                    ),
+                ),
+                (
+                    "rating",
+                    models.DecimalField(
+                        decimal_places=4,
+                        default=0,
+                        max_digits=6,
+                        verbose_name="Рейтинг",
+                    ),
+                ),
+                (
+                    "votes",
+                    models.IntegerField(default=0, verbose_name="Количество голосов"),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="Автор",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Публикация',
-                'verbose_name_plural': 'Публикации',
-                'ordering': ('-publish_date',),
+                "verbose_name": "Публикация",
+                "verbose_name_plural": "Публикации",
+                "ordering": ("-publish_date",),
             },
         ),
         migrations.CreateModel(
-            name='PublicationVote',
+            name="PublicationVote",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('vote', models.IntegerField(choices=[(-1, 'Плохой'), (0, 'нет отзыва'), (1, 'Хороший')], default=0, verbose_name='Отзыв')),
-                ('publication', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='publications.publication', verbose_name='Публикация')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='Автор')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "vote",
+                    models.IntegerField(
+                        choices=[(-1, "Плохой"), (0, "нет отзыва"), (1, "Хороший")],
+                        default=0,
+                        verbose_name="Отзыв",
+                    ),
+                ),
+                (
+                    "publication",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="publications.publication",
+                        verbose_name="Публикация",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="Автор",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'оценка публикации',
-                'verbose_name_plural': 'оценки публикаций',
-                'unique_together': {('user', 'publication')},
+                "verbose_name": "оценка публикации",
+                "verbose_name_plural": "оценки публикаций",
+                "unique_together": {("user", "publication")},
             },
         ),
     ]

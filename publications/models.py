@@ -62,7 +62,7 @@ class PublicationVote(  models.Model  ):
             )
 
             if created:
-                vote_obj.save()
+                return vote_obj
 
             elif vote_obj.vote != vote:
                 vote_obj.vote = vote
@@ -94,8 +94,6 @@ class Publication( models.Model ):
                                             blank=True,  )
 
     rating          = models.IntegerField( 
-#                                           max_digits=6, 
-#                                           decimal_places=4, 
                                            default=0, 
                                            verbose_name=u"Рейтинг" )
 

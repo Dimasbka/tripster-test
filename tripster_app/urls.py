@@ -18,29 +18,22 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
-#from django.contrib.auth import urls as auth_urls
+# from django.contrib.auth import urls as auth_urls
 
 from publications import views
 
 urlpatterns = [
-    path('api/', include('api.urls')),
-
-    path('api-auth/', include('rest_framework.urls')),
-
-    path('admin/', admin.site.urls),
-
-    path('', views.publications_listing, name='index'),
-    path('', views.publications_listing, name='publications-list'),
-    path('top/', views.publications_listing,{'order': 'top'}, name='publications-top' ),
-
-    path('publication/add/', views.publication_add, name='publication-add'),
-    path('publication/info/', views.publication_info, name='publication-info'),
-
-    path('publication/vote/',        views.vote_add, name='vote-add'),
-    path('publication/vote/delete/', views.vote_delete, name='vote-delete'),
-
-    path("accounts/registration/", views.user_registration, name='registration'),
-    path('accounts/', include(('django.contrib.auth.urls','auth'), namespace='auth')),
-    path('accounts/', include('django.contrib.auth.urls'))
-
+    path("api/", include("api.urls")),
+    path("api-auth/", include("rest_framework.urls")),
+    path("admin/", admin.site.urls),
+    path("", views.publications_listing, name="index"),
+    path("", views.publications_listing, name="publications-list"),
+    path("top/", views.publications_listing, {"order": "top"}, name="publications-top"),
+    path("publication/add/", views.publication_add, name="publication-add"),
+    path("publication/info/", views.publication_info, name="publication-info"),
+    path("publication/vote/", views.vote_add, name="vote-add"),
+    path("publication/vote/delete/", views.vote_delete, name="vote-delete"),
+    path("accounts/registration/", views.user_registration, name="registration"),
+    path("accounts/", include(("django.contrib.auth.urls", "auth"), namespace="auth")),
+    path("accounts/", include("django.contrib.auth.urls")),
 ]
